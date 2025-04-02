@@ -4,15 +4,13 @@
   of the 800 meter buffer.
 */
 
-with
-
-septa_bus_stop_blockgroups as (
+with septa_bus_stop_blockgroups as (
     select
         stops.stop_id,
         '1500000US' || bg.geoid as geoid
     from septa.bus_stops as stops
     inner join census.blockgroups_2020 as bg
-        on st_dwithin(stops.geog, bg.geog, 800)
+        on public.st_dwithin(stops.geog, bg.geog, 800)
 ),
 
 septa_bus_stop_surrounding_population as (

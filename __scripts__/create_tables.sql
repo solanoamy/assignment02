@@ -1,3 +1,5 @@
+-- Active: 1738783914188@@localhost@5432@assignment02
+-- Active: 1738783914188@@localhost@5432
 create schema if not exists septa;
 create schema if not exists phl;
 create schema if not exists census;
