@@ -5,22 +5,17 @@
   Order by distance (largest on top).
 */
 
-with parcel_bus_dist as(
-    select 
-        parcels.parcel_address as parcel_address,
-        parcels.geog
-    from phl.pwd_parcels as pwd
-    inner join septa.bus_stops
-)
-
-
-with septa_bus_stop_blockgroups as (
+select
+    parcels.address as parcel_address,
+    stops.stop_name as bus_stop,
+    round(cast(stops.dist as numeric), 2)
+from phl.pwd_parcels as parcels
+cross join lateral (
     select
-        stops.stop_id,
-        '1500000US' || bg.geoid as geoid
+        stops.stop_name,
+        stops.geog operator(public.<->) parcels.geog as dist
     from septa.bus_stops as stops
-    inner join census.blockgroups_2020 as bg
-        on public.st_dwithin(stops.geog, bg.geog, 800)
-    where bg.geoid like '42101%'
-),
-select * from phl.pwd_parcels limit 5
+    order by dist
+    limit 1
+) as stops
+order by stops.dist desc
